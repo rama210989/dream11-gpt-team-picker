@@ -1,5 +1,11 @@
 import streamlit as st
-from gpt_engine import get_best_dream11, get_weather_forecast, get_pitch_type
+from gpt_engine import (
+    get_best_dream11,
+    get_weather_forecast,
+    get_pitch_type,
+    get_real_time_weather,
+    get_pitch_conditions_from_weather,
+)
 from utils import load_csv_data, TEAM_LOGOS, TEAM_COLORS, VENUE_CITY_MAP
 
 st.set_page_config(page_title="Dream11 Predictor - IPL", layout="wide")
@@ -30,34 +36,44 @@ st.markdown(
 
 # === Venue and Conditions ===
 venue = st.selectbox("Select Venue", list(VENUE_CITY_MAP.keys()))
+city = VENUE_CITY_MAP.get(venue, venue)
 
-if st.button("Fetch Weather Forecast"):
-    with st.spinner("Contacting GPT..."):
-        city = VENUE_CITY_MAP.get(venue, venue)
-        weather = get_weather_forecast(city)
+weather = ""
+if st.button("🌤️ Fetch Real-Time Weather"):
+    with st.spinner("Fetching live weather..."):
+        weather = get_real_time_weather(city)
     st.success(f"Weather Forecast: {weather}")
 else:
     weather = st.text_input("Weather (optional, e.g., Humid, Rain Expected)")
 
+# Analyze pitch impact based on weather
+if weather:
+    if st.button("🧠 Analyze Pitch Impact from Weather"):
+        with st.spinner("Asking GPT..."):
+            analysis = get_pitch_conditions_from_weather(weather, venue)
+        st.info(analysis)
+
+# Toss and innings
 toss = st.selectbox("Who won the toss?", [team1, team2])
 bat_first = st.selectbox("Which team is batting first?", [team1, team2])
 
 # === Pitch Analysis ===
 pitch_text = st.text_area("Paste Pitch Report", placeholder="Dry pitch, might assist spinners in 2nd innings...")
-
 pitch_type = st.selectbox("Pitch Type (Manual)", ["Balanced", "Spin Friendly", "Pace Friendly"])
-if st.button("Analyze Pitch via GPT"):
+
+if st.button("🔍 Analyze Pitch via GPT"):
     with st.spinner("Analyzing pitch..."):
         pitch_type = get_pitch_type(pitch_text, venue)
     st.success(f"Predicted Pitch Type: {pitch_type}")
 
+# Average score style
 avg_score_type = st.selectbox("Scoring Nature", ["High Scoring", "Low Scoring"])
 
 # === CSV Upload ===
-uploaded_stats = st.file_uploader("Upload player stats CSV (optional)", type="csv")
+uploaded_stats = st.file_uploader("📁 Upload player stats CSV (optional)", type="csv")
 
 # === GENERATE TEAM ===
-if st.button("Generate Dream11 XI"):
+if st.button("🚀 Generate Dream11 XI"):
     player_stats = load_csv_data(uploaded_stats) if uploaded_stats else None
 
     user_input = {
@@ -68,7 +84,7 @@ if st.button("Generate Dream11 XI"):
         "bat_first": bat_first,
         "pitch": pitch_type,
         "avg_score": avg_score_type,
-        "weather": weather
+        "weather": weather,
     }
 
     response = get_best_dream11(user_input, player_stats)
