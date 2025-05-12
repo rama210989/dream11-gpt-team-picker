@@ -1,5 +1,6 @@
 from openai import OpenAI
 import streamlit as st
+import requests
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
@@ -69,22 +70,37 @@ Pitch Report:
 
     return response.choices[0].message.content
 
-import requests
 
-# Add these to gpt_engine.py if missing
+# Add this to gpt_engine.py
 def get_real_time_weather(city):
-    import requests
-    api_key = "your_weatherbit_api_key"  # or use st.secrets
+    api_key = "your_weatherbit_api_key"  # Replace with your actual Weather API key
     url = f"https://api.weatherbit.io/v2.0/forecast/daily?city={city}&key={api_key}&days=1"
-    response = requests.get(url)
-    if response.status_code == 200:
-        forecast = response.json()["data"][0]
-        return (
-            f"{forecast['weather']['description']}, "
-            f"Temp: {forecast['min_temp']}°C–{forecast['max_temp']}°C, "
-            f"Humidity: {forecast['rh']}%, Wind: {forecast['wind_spd']} m/s"
-        )
-    return "Weather data not available."
+
+    try:
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            forecast = response.json().get("data", [])[0]  # Ensure we get the forecast data
+            
+            if forecast:
+                weather_description = forecast['weather']['description']
+                min_temp = forecast['min_temp']
+                max_temp = forecast['max_temp']
+                humidity = forecast['rh']
+                wind_speed = forecast['wind_spd']
+                
+                # Format weather data
+                return (f"{weather_description}, "
+                        f"Temp: {min_temp}°C–{max_temp}°C, "
+                        f"Humidity: {humidity}%, Wind: {wind_speed} m/s")
+            else:
+                return "Weather data not available for this city."
+        else:
+            return f"Error: Unable to fetch weather data. HTTP Status Code: {response.status_code}"
+
+    except Exception as e:
+        return f"Error fetching weather data: {str(e)}"
+
 
 def get_pitch_conditions_from_weather(weather_summary, venue):
     prompt = f"""
@@ -101,5 +117,3 @@ Give a brief analysis on whether it supports spin/seam/batting and why.
         temperature=0.5,
     )
     return response.choices[0].message.content
-
-
