@@ -1,6 +1,6 @@
 import streamlit as st
 from gpt_engine import get_best_dream11, get_weather_forecast, get_pitch_type
-from utils import load_csv_data, TEAM_LOGOS, TEAM_COLORS
+from utils import load_csv_data, TEAM_LOGOS, TEAM_COLORS, VENUE_CITY_MAP
 
 st.set_page_config(page_title="Dream11 Predictor - IPL", layout="wide")
 
@@ -29,17 +29,12 @@ st.markdown(
 )
 
 # === Venue and Conditions ===
-venues = [
-    "Wankhede Stadium", "M. Chinnaswamy Stadium", "Narendra Modi Stadium", 
-    "Eden Gardens", "Arun Jaitley Stadium", "MA Chidambaram Stadium",
-    "Sawai Mansingh Stadium", "Rajiv Gandhi Intl. Stadium", "Ekana Stadium", 
-    "Punjab Cricket Association IS Bindra Stadium"
-]
-venue = st.selectbox("Select Venue", venues)
+venue = st.selectbox("Select Venue", list(VENUE_CITY_MAP.keys()))
 
 if st.button("Fetch Weather Forecast"):
     with st.spinner("Contacting GPT..."):
-        weather = get_weather_forecast(venue)
+        city = VENUE_CITY_MAP.get(venue, venue)
+        weather = get_weather_forecast(city)
     st.success(f"Weather Forecast: {weather}")
 else:
     weather = st.text_input("Weather (optional, e.g., Humid, Rain Expected)")
