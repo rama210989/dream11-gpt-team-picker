@@ -42,8 +42,6 @@ if st.button("🌤️ Fetch Real-Time Weather"):
     with st.spinner("Fetching live weather..."):
         weather = get_real_time_weather(city)
     st.success(f"Weather Forecast: {weather}")
-else:
-    weather = st.text_input("Weather (optional, e.g., Humid, Rain Expected)")
 
 # === Analyze Weather → Pitch Impact ===
 if weather:
@@ -58,15 +56,9 @@ bat_first = st.selectbox("Which team is batting first?", [team1, team2])
 
 # === Pitch Report Analysis ===
 pitch_text = st.text_area("Paste Pitch Report", placeholder="Dry pitch, might assist spinners in 2nd innings...")
-pitch_type = st.selectbox("Pitch Type (Manual)", ["Balanced", "Spin Friendly", "Pace Friendly"])
-
-# === GPT-based Pitch Classification ===
-if st.button("🔍 Analyze Pitch via GPT"):
-    with st.spinner("Analyzing pitch report..."):
-        pitch_type = get_pitch_type(pitch_text, venue)
-    st.success(f"Predicted Pitch Type: {pitch_type}")
 
 # === GPT-based Final Pitch from ALL Factors ===
+pitch_type = None
 if st.button("📊 Final Pitch Type (Based on Weather + Report + Venue)"):
     full_context = f"""
 Venue: {venue}
@@ -94,7 +86,7 @@ if st.button("🚀 Generate Dream11 XI"):
         "venue": venue,
         "toss": toss,
         "bat_first": bat_first,
-        "pitch": pitch_type,
+        "pitch": pitch_type or "Balanced",
         "avg_score": avg_score_type,
         "weather": weather,
     }
