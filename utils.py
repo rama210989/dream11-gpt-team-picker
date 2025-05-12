@@ -6,42 +6,27 @@ TEAM_LOGOS = {
     "GT": "https://upload.wikimedia.org/wikipedia/en/thumb/0/09/Gujarat_Titans_Logo.svg/1200px-Gujarat_Titans_Logo.svg.png",
     "RR": "https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Rajasthan_Royals_Logo.svg/1200px-Rajasthan_Royals_Logo.svg.png",
     "LSG": "https://upload.wikimedia.org/wikipedia/en/8/88/Lucknow_Super_Giants_Logo.svg",
-    "SRH": "https://upload.wikimedia.org/wikipedia/en/thumb/8/81/Sunrisers_Hyderabad.svg/1200px-Sunrisers_Hyderabad.svg.png",
-    "PBKS": "https://upload.wikimedia.org/wikipedia/en/d/d4/Punjab_Kings_Logo.svg",
-    "DC": "https://upload.wikimedia.org/wikipedia/en/5/5f/Delhi_Capitals.svg"
+    "DC": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5e/Delhi_Capitals_logo.svg/1200px-Delhi_Capitals_logo.svg.png",
 }
 
 TEAM_COLORS = {
-    "CSK": "#f4d03f",
-    "MI": "#004ba0",
-    "RCB": "#da291c",
-    "KKR": "#3f2b96",
-    "GT": "#0f1a2d",
-    "RR": "#ff66b2",
-    "LSG": "#00baf2",
-    "SRH": "#f26522",
-    "PBKS": "#c8102e",
-    "DC": "#17449b"
+    "CSK": "#FFB81C",
+    "MI": "#005B8C",
+    "RCB": "#E20A22",
+    "KKR": "#512D6D",
+    "GT": "#1E4A6E",
+    "RR": "#004B87",
+    "LSG": "#0076A5",
+    "DC": "#1D3557",
 }
 
 VENUE_CITY_MAP = {
     "Wankhede Stadium": "Mumbai",
-    "M. Chinnaswamy Stadium": "Bengaluru",
-    "Narendra Modi Stadium": "Ahmedabad",
     "Eden Gardens": "Kolkata",
+    "M Chinnaswamy Stadium": "Bangalore",
     "Arun Jaitley Stadium": "Delhi",
-    "MA Chidambaram Stadium": "Chennai",
     "Sawai Mansingh Stadium": "Jaipur",
-    "Rajiv Gandhi Intl. Stadium": "Hyderabad",
-    "Ekana Stadium": "Lucknow",
-    "Punjab Cricket Association IS Bindra Stadium": "Mohali"
+    "DY Patil Stadium": "Navi Mumbai",
+    "Narendra Modi Stadium": "Ahmedabad",
+    "Pune": "Pune",
 }
-
-
-import pandas as pd
-
-def load_csv_data(uploaded_file):
-    try:
-        return pd.read_csv(uploaded_file)
-    except Exception as e:
-        return None
