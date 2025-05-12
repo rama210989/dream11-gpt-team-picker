@@ -24,6 +24,19 @@ TEAM_COLORS = {
     "DC": "#17449b"
 }
 
+VENUE_CITY_MAP = {
+    "Wankhede Stadium": "Mumbai",
+    "M. Chinnaswamy Stadium": "Bengaluru",
+    "Narendra Modi Stadium": "Ahmedabad",
+    "Eden Gardens": "Kolkata",
+    "Arun Jaitley Stadium": "Delhi",
+    "MA Chidambaram Stadium": "Chennai",
+    "Sawai Mansingh Stadium": "Jaipur",
+    "Rajiv Gandhi Intl. Stadium": "Hyderabad",
+    "Ekana Stadium": "Lucknow",
+    "Punjab Cricket Association IS Bindra Stadium": "Mohali"
+}
+
 
 import pandas as pd
 
