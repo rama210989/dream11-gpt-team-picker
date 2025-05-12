@@ -1,7 +1,7 @@
-import openai
+from openai import OpenAI
 import streamlit as st
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def get_best_dream11(match_context, player_stats=None):
     prompt = f"""
@@ -30,42 +30,41 @@ Factors to consider:
 Now, list the best possible Dream11 team (11 players) with their roles.
 """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.7,
     )
 
-    return response['choices'][0]['message']['content']
+    return response.choices[0].message.content
 
 
-def get_weather_forecast(venue):
-    prompt = f"What is the typical weather forecast at {venue} during the IPL season in India? Give a 1-line summary."
-    response = openai.ChatCompletion.create(
+def get_weather_forecast(city):
+    prompt = f"What is the typical weather forecast in {city} during IPL season in April and May? Give a 1-line summary."
+    
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5,
     )
-    return response['choices'][0]['message']['content']
+    
+    return response.choices[0].message.content
 
 
 def get_pitch_type(pitch_text, venue):
     prompt = f"""
-You're a cricket analyst. Based on the pitch report below and historical behavior at {venue}, classify the pitch as:
-- Spin Friendly
-- Seam Friendly
-- Balanced
-
-Add a short explanation.
+You're a cricket analyst. Based on the pitch report and historical pitch behavior at {venue}, determine if the pitch is Spin Friendly, Seam Friendly, or Balanced. Explain briefly.
 
 Pitch Report:
 \"\"\"
 {pitch_text}
 \"\"\"
 """
-    response = openai.ChatCompletion.create(
+
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5,
     )
-    return response['choices'][0]['message']['content']
+
+    return response.choices[0].message.content
