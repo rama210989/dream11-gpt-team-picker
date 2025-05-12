@@ -71,21 +71,35 @@ Pitch Report:
 
 import requests
 
+# Add these to gpt_engine.py if missing
 def get_real_time_weather(city):
-    api_key = "02d0becfc11b47d6b1657cac224dddbc"
+    import requests
+    api_key = "your_weatherbit_api_key"  # or use st.secrets
     url = f"https://api.weatherbit.io/v2.0/forecast/daily?city={city}&key={api_key}&days=1"
     response = requests.get(url)
-
     if response.status_code == 200:
-        data = response.json()
-        forecast = data["data"][0]
-        summary = (
+        forecast = response.json()["data"][0]
+        return (
             f"{forecast['weather']['description']}, "
             f"Temp: {forecast['min_temp']}°C–{forecast['max_temp']}°C, "
             f"Humidity: {forecast['rh']}%, Wind: {forecast['wind_spd']} m/s"
         )
-        return summary
-    else:
-        return "Weather data not available."
+    return "Weather data not available."
+
+def get_pitch_conditions_from_weather(weather_summary, venue):
+    prompt = f"""
+You're a cricket analyst. Based on the following weather forecast and venue, describe how the conditions will likely affect pitch behavior, swing/seam/spin support, and batting.
+
+Weather Forecast: {weather_summary}
+Venue: {venue}
+
+Give a brief analysis on whether it supports spin/seam/batting and why.
+"""
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5,
+    )
+    return response.choices[0].message.content
 
 
