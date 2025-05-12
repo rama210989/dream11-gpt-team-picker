@@ -37,3 +37,35 @@ Now, list the best possible Dream11 team (11 players) with their roles.
     )
 
     return response['choices'][0]['message']['content']
+
+
+def get_weather_forecast(venue):
+    prompt = f"What is the typical weather forecast at {venue} during the IPL season in India? Give a 1-line summary."
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5,
+    )
+    return response['choices'][0]['message']['content']
+
+
+def get_pitch_type(pitch_text, venue):
+    prompt = f"""
+You're a cricket analyst. Based on the pitch report below and historical behavior at {venue}, classify the pitch as:
+- Spin Friendly
+- Seam Friendly
+- Balanced
+
+Add a short explanation.
+
+Pitch Report:
+\"\"\"
+{pitch_text}
+\"\"\"
+"""
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5,
+    )
+    return response['choices'][0]['message']['content']
