@@ -1,3 +1,6 @@
+import pandas as pd
+
+# Define team logos (URLs)
 TEAM_LOGOS = {
     "CSK": "https://upload.wikimedia.org/wikipedia/en/thumb/2/2e/Chennai_Super_Kings_Logo.svg/1200px-Chennai_Super_Kings_Logo.svg.png",
     "MI": "https://upload.wikimedia.org/wikipedia/en/thumb/2/25/Mumbai_Indians_Logo.svg/1200px-Mumbai_Indians_Logo.svg.png",
@@ -9,6 +12,7 @@ TEAM_LOGOS = {
     "DC": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5e/Delhi_Capitals_logo.svg/1200px-Delhi_Capitals_logo.svg.png",
 }
 
+# Define team colors
 TEAM_COLORS = {
     "CSK": "#FFB81C",
     "MI": "#005B8C",
@@ -20,6 +24,7 @@ TEAM_COLORS = {
     "DC": "#1D3557",
 }
 
+# Define venue to city mapping
 VENUE_CITY_MAP = {
     "Wankhede Stadium": "Mumbai",
     "Eden Gardens": "Kolkata",
@@ -30,3 +35,10 @@ VENUE_CITY_MAP = {
     "Narendra Modi Stadium": "Ahmedabad",
     "Pune": "Pune",
 }
+
+# Function to load CSV data
+def load_csv_data(uploaded_file):
+    try:
+        return pd.read_csv(uploaded_file)
+    except Exception as e:
+        return None
