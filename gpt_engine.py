@@ -71,33 +71,32 @@ Pitch Report:
     return response.choices[0].message.content
 
 
-# Add this to gpt_engine.py
 def get_real_time_weather(city):
-    api_key = "02d0becfc11b47d6b1657cac224dddbc"  # Replace with your actual Weather API key
+    api_key = "02d0becfc11b47d6b1657cac224dddbc"
     url = f"https://api.weatherbit.io/v2.0/forecast/daily?city={city}&key={api_key}&days=1"
 
     try:
         response = requests.get(url)
         
         if response.status_code == 200:
-            forecast = response.json().get("data", [])[0]  # Ensure we get the forecast data
+            data = response.json()
+            forecast = data.get("data", [])[0]
             
             if forecast:
-                weather_description = forecast['weather']['description']
+                description = forecast['weather']['description']
                 min_temp = forecast['min_temp']
                 max_temp = forecast['max_temp']
                 humidity = forecast['rh']
                 wind_speed = forecast['wind_spd']
-                
-                # Format weather data
-                return (f"{weather_description}, "
-                        f"Temp: {min_temp}°C–{max_temp}°C, "
+
+                return (f"{description}, Temp: {min_temp}°C–{max_temp}°C, "
                         f"Humidity: {humidity}%, Wind: {wind_speed} m/s")
             else:
                 return "Weather data not available for this city."
+        elif response.status_code == 403:
+            return "Error: Access denied. Check API key or usage limits."
         else:
             return f"Error: Unable to fetch weather data. HTTP Status Code: {response.status_code}"
-
     except Exception as e:
         return f"Error fetching weather data: {str(e)}"
 
