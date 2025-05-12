@@ -73,7 +73,7 @@ Pitch Report:
 
 # Add this to gpt_engine.py
 def get_real_time_weather(city):
-    api_key = "your_weatherbit_api_key"  # Replace with your actual Weather API key
+    api_key = "02d0becfc11b47d6b1657cac224dddbc"  # Replace with your actual Weather API key
     url = f"https://api.weatherbit.io/v2.0/forecast/daily?city={city}&key={api_key}&days=1"
 
     try:
