@@ -16,6 +16,18 @@ with col1:
 with col2:
     team2 = st.selectbox("Select Team 2", [t for t in teams if t != team1])
 
+from utils import TEAM_LOGOS, TEAM_COLORS
+
+col_logo1, col_logo2 = st.columns(2)
+with col_logo1:
+    st.image(TEAM_LOGOS[team1], width=100)
+with col_logo2:
+    st.image(TEAM_LOGOS[team2], width=100)
+
+# Optional: Add a colored subheader
+st.markdown(f"<h3 style='color:{TEAM_COLORS[team1]}'> {team1} vs {team2}</h3>", unsafe_allow_html=True)
+
+
 venue = st.text_input("Venue (e.g., Wankhede Stadium)")
 toss = st.selectbox("Who won the toss?", [team1, team2])
 bat_first = st.selectbox("Which team is batting first?", [team1, team2])
