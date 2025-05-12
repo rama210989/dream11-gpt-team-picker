@@ -30,44 +30,21 @@ Factors to consider:
     
 Now, list the best possible Dream11 team (11 players) with their roles.
 """
-
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.7,
     )
-
     return response.choices[0].message.content
 
 
 def get_weather_forecast(city):
     prompt = f"What is the typical weather forecast in {city} during IPL season in April and May? Give a 1-line summary."
-    
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5,
     )
-    
-    return response.choices[0].message.content
-
-
-def get_pitch_type(pitch_text, venue):
-    prompt = f"""
-You're a cricket analyst. Based on the pitch report and historical pitch behavior at {venue}, determine if the pitch is Spin Friendly, Seam Friendly, or Balanced. Explain briefly.
-
-Pitch Report:
-\"\"\"
-{pitch_text}
-\"\"\"
-"""
-
-    response = client.chat.completions.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.5,
-    )
-
     return response.choices[0].message.content
 
 
@@ -77,28 +54,44 @@ def get_real_time_weather(city):
 
     try:
         response = requests.get(url)
-        
         if response.status_code == 200:
-            data = response.json()
-            forecast = data.get("data", [])[0]
-            
+            forecast = response.json().get("data", [])[0]
             if forecast:
-                description = forecast['weather']['description']
+                weather_description = forecast['weather']['description']
                 min_temp = forecast['min_temp']
                 max_temp = forecast['max_temp']
                 humidity = forecast['rh']
                 wind_speed = forecast['wind_spd']
-
-                return (f"{description}, Temp: {min_temp}°C–{max_temp}°C, "
+                return (f"{weather_description}, Temp: {min_temp}°C–{max_temp}°C, "
                         f"Humidity: {humidity}%, Wind: {wind_speed} m/s")
             else:
                 return "Weather data not available for this city."
-        elif response.status_code == 403:
-            return "Error: Access denied. Check API key or usage limits."
         else:
             return f"Error: Unable to fetch weather data. HTTP Status Code: {response.status_code}"
     except Exception as e:
         return f"Error fetching weather data: {str(e)}"
+
+
+def get_pitch_type(pitch_text, venue):
+    prompt = f"""
+You're a cricket analyst. Based on the following inputs, determine the likely pitch nature (Spin Friendly, Seam Friendly, or Balanced).
+Use historical data of the venue if pitch report is not conclusive.
+
+Venue: {venue}
+Pitch Report:
+\"\"\"
+{pitch_text}
+\"\"\"
+
+Explain briefly your reasoning and give final classification at the end like:
+Prediction: Spin Friendly
+"""
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5,
+    )
+    return response.choices[0].message.content
 
 
 def get_pitch_conditions_from_weather(weather_summary, venue):
