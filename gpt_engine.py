@@ -68,3 +68,24 @@ Pitch Report:
     )
 
     return response.choices[0].message.content
+
+import requests
+
+def get_real_time_weather(city):
+    api_key = "02d0becfc11b47d6b1657cac224dddbc"
+    url = f"https://api.weatherbit.io/v2.0/forecast/daily?city={city}&key={api_key}&days=1"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        forecast = data["data"][0]
+        summary = (
+            f"{forecast['weather']['description']}, "
+            f"Temp: {forecast['min_temp']}°C–{forecast['max_temp']}°C, "
+            f"Humidity: {forecast['rh']}%, Wind: {forecast['wind_spd']} m/s"
+        )
+        return summary
+    else:
+        return "Weather data not available."
+
+
