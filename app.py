@@ -1,96 +1,50 @@
 import streamlit as st
-from gpt_engine import (
-    get_best_dream11,
-    get_weather_forecast,
-    get_pitch_type,
-    get_real_time_weather,
-    get_pitch_conditions_from_weather,
-)
-from utils import load_csv_data, TEAM_LOGOS, TEAM_COLORS, VENUE_CITY_MAP
+import requests
 
-st.set_page_config(page_title="Dream11 Predictor - IPL", layout="wide")
-st.title("🏏 Dream11 Team Predictor (Powered by GPT-4)")
-st.markdown("Generate the best possible playing XI between two IPL teams using GenAI.")
+# Fetch team and player data
+def fetch_team_data(team_name):
+    url = f"http://iplt20-stats.herokuapp.com/api/team/{team_name}"
+    response = requests.get(url)
+    return response.json()
 
-# === Team Selection ===
-teams = list(TEAM_LOGOS.keys())
-col1, col2 = st.columns(2)
-with col1:
-    team1 = st.selectbox("Select Team 1", teams)
-with col2:
-    team2 = st.selectbox("Select Team 2", [t for t in teams if t != team1])
+def fetch_player_stats(player_id):
+    url = f"http://iplt20-stats.herokuapp.com/api/player-details/{player_id}"
+    response = requests.get(url)
+    return response.json()
 
-# === Logos and Theme ===
-col_logo1, col_logo2 = st.columns(2)
-with col_logo1:
-    st.image(TEAM_LOGOS[team1], width=100)
-with col_logo2:
-    st.image(TEAM_LOGOS[team2], width=100)
+# Streamlit UI
+st.title("IPL Dream11 Team Predictor")
 
-st.markdown(
-    f"<h3 style='color:{TEAM_COLORS[team1]}'> {team1} vs {team2} </h3>",
-    unsafe_allow_html=True
-)
+# Dropdown for team selection
+team1 = st.selectbox("Select Team 1", ["CSK", "MI", "RCB", "KKR", "GT", "RR", "LSG", "DC"])
+team2 = st.selectbox("Select Team 2", ["CSK", "MI", "RCB", "KKR", "GT", "RR", "LSG", "DC"])
 
-# === Venue and Conditions ===
-venue = st.selectbox("Select Venue", list(VENUE_CITY_MAP.keys()))
-city = VENUE_CITY_MAP.get(venue, venue)
+# Fetch and display team data
+team1_data = fetch_team_data(team1)
+team2_data = fetch_team_data(team2)
 
-# === Weather Fetch ===
-weather = ""
-if st.button("🌤️ Fetch Real-Time Weather"):
-    with st.spinner("Fetching live weather..."):
-        weather = get_real_time_weather(city)
-    st.success(f"Weather Forecast: {weather}")
+st.write(f"**{team1} Squad**")
+st.write(team1_data)
 
-# === Analyze Weather → Pitch Impact ===
-if weather:
-    if st.button("🧠 Analyze Pitch Impact from Weather"):
-        with st.spinner("Asking GPT..."):
-            analysis = get_pitch_conditions_from_weather(weather, venue)
-        st.info(analysis)
+st.write(f"**{team2} Squad**")
+st.write(team2_data)
 
-# === Toss and Batting Order ===
-toss = st.selectbox("Who won the toss?", [team1, team2])
-bat_first = st.selectbox("Which team is batting first?", [team1, team2])
+# Button to generate Dream11 XI
+if st.button("Generate Dream11 XI"):
+    # Logic to select best XI based on player stats
+    best_xi = []
+    for team in [team1_data, team2_data]:
+        for player in team['players']:
+            stats = fetch_player_stats(player['id'])
+            # Basic selection criteria: top 5 players based on batting average
+            if len(best_xi) < 5:
+                best_xi.append((player['name'], stats['batting']['average']))
+            else:
+                min_avg_player = min(best_xi, key=lambda x: x[1])
+                if stats['batting']['average'] > min_avg_player[1]:
+                    best_xi.remove(min_avg_player)
+                    best_xi.append((player['name'], stats['batting']['average']))
 
-# === Pitch Report Analysis ===
-pitch_text = st.text_area("Paste Pitch Report", placeholder="Dry pitch, might assist spinners in 2nd innings...")
-
-# === GPT-based Final Pitch from ALL Factors ===
-pitch_type = None
-if st.button("📊 Final Pitch Type (Based on Weather + Report + Venue)"):
-    full_context = f"""
-Venue: {venue}
-City: {city}
-Pitch Report: {pitch_text if pitch_text else 'Not provided'}
-Weather: {weather if weather else 'Not provided'}
-"""
-    with st.spinner("Combining inputs and predicting final pitch behavior..."):
-        pitch_type = get_pitch_type(full_context, venue)
-    st.success(f"🏟️ Final Predicted Pitch Type: {pitch_type}")
-
-# === Match Scoring Nature ===
-avg_score_type = st.selectbox("Scoring Nature", ["High Scoring", "Low Scoring"])
-
-# === CSV Upload ===
-uploaded_stats = st.file_uploader("📁 Upload player stats CSV (optional)", type="csv")
-
-# === GENERATE TEAM ===
-if st.button("🚀 Generate Dream11 XI"):
-    player_stats = load_csv_data(uploaded_stats) if uploaded_stats else None
-
-    user_input = {
-        "team1": team1,
-        "team2": team2,
-        "venue": venue,
-        "toss": toss,
-        "bat_first": bat_first,
-        "pitch": pitch_type or "Balanced",
-        "avg_score": avg_score_type,
-        "weather": weather,
-    }
-
-    response = get_best_dream11(user_input, player_stats)
-    st.subheader("💡 Suggested Dream11 Team:")
-    st.code(response)
+    st.write("**Suggested Dream11 XI**")
+    for player, avg in sorted(best_xi, key=lambda x: x[1], reverse=True):
+        st.write(f"{player} - Batting Average: {avg}")
