@@ -45,7 +45,7 @@ if st.button("Pick Best 11"):
     combined = pd.concat([team1_df, team2_df], ignore_index=True)
     combined = combined.sort_values(by="Dream11 Points", ascending=False)
 
-    # Roles we must have at least one of
+    # Required roles with exact names as per your data
     required_roles = ["Wicket Keeper", "Batsman", "Bowler", "All Rounder"]
     selected_players = pd.DataFrame()
 
@@ -58,7 +58,7 @@ if st.button("Pick Best 11"):
         else:
             st.warning(f"No player found for role: {role}")
 
-    # Remove selected players from combined
+    # Remove selected players from combined so no duplicates
     remaining_players = combined[~combined["Player"].isin(selected_players["Player"])]
 
     # Fill remaining spots to make total 11 players
