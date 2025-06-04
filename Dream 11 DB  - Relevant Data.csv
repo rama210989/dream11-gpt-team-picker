@@ -2,18 +2,18 @@ Player Name,Team Name,Role,Dream 11 Points
 ,,,
 V Kohli,RCB,Batsman,939
 RD Gaikwad,CSK,Batsman,723
-R Parag,RR,Batsman,713
+R Parag,RR,All Rounder,713
 TM Head,SRH,Batsman,743
 SV Samson,RR,Wicket Keeper,669
 B Sai Sudharsan,GT,Batsman,641
 KL Rahul,LSG,Wicket Keeper,637
 N Pooran,LSG,Wicket Keeper,634
 SP Narine,KKR,All Rounder,648
-Abhishek Sharma,SRH,Batsman,634
+Abhishek Sharma,SRH,All Rounder,634
 H Klaasen,SRH,Wicket Keeper,612
 RR Pant,DC,Wicket Keeper,560
 F du Plessis,RCB,Batsman,563
-PD Salt,KKR,Batsman,569
+PD Salt,KKR,Wicket Keeper,569
 YBK Jaiswal,RR,Batsman,547
 Shubman Gill,GT,Batsman,527
 RG Sharma,MI,Batsman,532
@@ -27,83 +27,83 @@ JC Buttler,RR,Wicket Keeper,451
 Shashank Singh,PBKS,Batsman,440
 SS Iyer,KKR,Batsman,429
 SA Yadav,MI,Batsman,455
-Prabhsimran Singh,PBKS,Batsman,426
+Prabhsimran Singh,PBKS,Wicket Keeper,426
 J Fraser-McGurk,DC,Batsman,454
-Abishek Porel,DC,Batsman,407
+Abishek Porel,DC,Wicket Keeper,407
 KD Karthik,RCB,Wicket Keeper,417
-Ishan Kishan,MI,Batsman,393
+Ishan Kishan,MI,Wicket Keeper,393
 DJ Mitchell,CSK,Batsman,383
-K Nitish Kumar Reddy,SRH,Batsman,378
-JM Bairstow,PBKS,All Rounder,377
+K Nitish Kumar Reddy,SRH,All Rounder,378
+JM Bairstow,PBKS,Wicket Keeper,377
 SM Curran,PBKS,All Rounder,320
-RA Jadeja,CSK,Wicket Keeper,315
-C Green,RCB,Batsman,299
-Q de Kock,LSG,Batsman,321
+RA Jadeja,CSK,All Rounder,315
+C Green,RCB,All Rounder,299
+Q de Kock,LSG,Wicket Keeper,321
 AM Rahane,CSK,Batsman,279
 TH David,MI,Batsman,287
-AR Patel,DC,Batsman,290
+AR Patel,DC,All Rounder,290
 A Badoni,LSG,Batsman,283
-WG Jacks,RCB,Batsman,312
+WG Jacks,RCB,All Rounder,312
 AD Russell,KKR,All Rounder,288
-R Ravindra,CSK,All Rounder,278
-AK Markram,SRH,Batsman,252
+R Ravindra,CSK,Batsman,278
+AK Markram,SRH,All Rounder,252
 HH Pandya,MI,All Rounder,255
-Shahbaz Ahmed,SRH,Batsman,254
+Shahbaz Ahmed,SRH,All Rounder,254
 RR Rossouw,PBKS,Batsman,270
 DA Miller,GT,Batsman,258
 PP Shaw,DC,Batsman,250
 DC Jurel,RR,Wicket Keeper,243
 AR Sharma,PBKS,Batsman,241
 R Tewatia,GT,Batsman,224
-JM Sharma,PBKS,Batsman,220
+JM Sharma,PBKS,Wicket Keeper,220
 SD Hope,DC,Batsman,221
 Abdul Samad,SRH,Batsman,221
 DA Warner,DC,Batsman,215
-RK Singh,KKR,Wicket Keeper,199
-RA Tripathi,SRH,Bowler,205
-A Raghuvanshi,KKR,All Rounder,207
-MS Dhoni,CSK,Batsman,205
+RK Singh,KKR,Batsman,199
+RA Tripathi,SRH,Batsman,205
+A Raghuvanshi,KKR,Batsman,207
+MS Dhoni,CSK,Wicket Keeper,205
 S Dhawan,PBKS,Batsman,186
 DJ Hooda,LSG,Batsman,175
 Naman Dhir,MI,Batsman,182
 WP Saha,GT,Wicket Keeper,160
 PJ Cummins,SRH,Bowler,163
 KH Pandya,LSG,All Rounder,151
-MM Ali,CSK,Batsman,161
+MM Ali,CSK,All Rounder,161
 M Shahrukh Khan,GT,Batsman,164
-Ramandeep Singh,KKR,Batsman,160
+Ramandeep Singh,KKR,All Rounder,160
 MK Lomror,RCB,Batsman,154
 SO Hetmyer,RR,Batsman,138
-LS Livingstone,PBKS,Batsman,133
+LS Livingstone,PBKS,All Rounder,133
 N Wadhera,MI,Batsman,130
 R Powell,RR,Batsman,129
 Rashid Khan,GT,Bowler,119
 Anuj Rawat,RCB,Batsman,114
-R Ashwin,RR,Bowler,97
+R Ashwin,RR,All Rounder,97
 Arshad Khan,LSG,Bowler,109
-V Shankar,GT,Bowler,94
+V Shankar,GT,All Rounder,94
 Harpreet Brar,PBKS,Bowler,89
-D Brevis,MI,Bowler,80
-MA Agarwal,SRH,Bowler,74
-Rahmanullah Gurbaz,KKR,Bowler,79
+D Brevis,MI,Batsman,80
+MA Agarwal,SRH,Batsman,74
+Rahmanullah Gurbaz,KKR,Wicket Keeper,79
 A Taide,PBKS,Bowler,76
-MR Marsh,DC,Bowler,78
-R Shepherd,MI,Bowler,78
-GJ Maxwell,RCB,Bowler,54
+MR Marsh,DC,Batsman,78
+R Shepherd,MI,All Rounder,78
+GJ Maxwell,RCB,All Rounder,54
 Sameer Rizvi,CSK,Bowler,57
 T Kohler-Cadmore,RR,Bowler,57
 Kuldeep Yadav,DC,Bowler,53
 Sikandar Raza,PBKS,Bowler,49
-MK Pandey,KKR,Bowler,50
+MK Pandey,KKR,Batsman,50
 N Rana,KKR,Bowler,49
 Azmatullah Omarzai,GT,Bowler,48
-D Padikkal,LSG,Bowler,37
+D Padikkal,LSG,Batsman,37
 Swapnil Singh,RCB,Bowler,50
 Mohammad Nabi,MI,Bowler,39
 SB Dubey,RR,Bowler,44
 KV Sharma,RCB,Bowler,45
 Rasikh Salam,DC,Bowler,32
-KS Williamson,GT,Bowler,31
+KS Williamson,GT,Batsman,31
 Harpreet Singh,PBKS,Bowler,29
 SS Prabhudessai,RCB,Bowler,29
 TK Kotian,RR,Bowler,27
