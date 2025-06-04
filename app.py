@@ -1,20 +1,20 @@
 import streamlit as st
 import pandas as pd
 
-# Role emoji mapping
+# Emojis for roles
 ROLE_EMOJIS = {
+    "Wicket Keeper": "🧤",
     "Batsman": "🏏",
     "Bowler": "🎯",
-    "All Rounder": "🔄",
-    "Wicket Keeper": "🧤"
+    "All Rounder": "🤹"
 }
 
-# Color mapping for roles
+# Colors for roles
 ROLE_COLORS = {
-    "Batsman": "#FFD700",       # Gold
-    "Bowler": "#1E90FF",        # DodgerBlue
-    "All Rounder": "#32CD32",   # LimeGreen
-    "Wicket Keeper": "#FF69B4"  # HotPink
+    "Wicket Keeper": "#FFF3CD",  # light yellow
+    "Batsman": "#D1E7DD",        # light green
+    "Bowler": "#F8D7DA",         # light red
+    "All Rounder": "#CCE5FF"     # light blue
 }
 
 # Load and clean data from single CSV
@@ -88,15 +88,19 @@ if st.button("Pick Best 11"):
     # Add serial number 1-11
     selected_players.insert(0, "No.", range(1, len(selected_players) + 1))
 
-    # Add emoji for role
+    # Convert points to int (no decimals)
+    selected_players["Dream11 Points"] = selected_players["Dream11 Points"].astype(int)
+
+    # Add emoji before role
     selected_players["Role"] = selected_players["Role"].apply(lambda r: f"{ROLE_EMOJIS.get(r, '')} {r}")
 
-    # Style the dataframe for colors by role
+    # Style function to color role cells
     def color_roles(row):
-        # Extract role name after emoji for coloring
-        role_name = row["Role"].split(" ", 1)[1] if " " in row["Role"] else row["Role"]
+        role_with_emoji = row["Role"]
+        # Extract role text after emoji and space
+        role_name = role_with_emoji.split(" ", 1)[1] if " " in role_with_emoji else role_with_emoji
         color = ROLE_COLORS.get(role_name, "")
-        return [f"background-color: {color}" if col == "Role" else "" for col in row.index]
+        return ["background-color: {}".format(color) if col == "Role" else "" for col in row.index]
 
     styled_df = selected_players.style.apply(color_roles, axis=1)
 
