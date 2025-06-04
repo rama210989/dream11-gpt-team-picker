@@ -1,6 +1,22 @@
 import streamlit as st
 import pandas as pd
 
+# Role emoji mapping
+ROLE_EMOJIS = {
+    "Batsman": "🏏",
+    "Bowler": "🎯",
+    "All Rounder": "🔄",
+    "Wicket Keeper": "🧤"
+}
+
+# Color mapping for roles
+ROLE_COLORS = {
+    "Batsman": "#FFD700",       # Gold
+    "Bowler": "#1E90FF",        # DodgerBlue
+    "All Rounder": "#32CD32",   # LimeGreen
+    "Wicket Keeper": "#FF69B4"  # HotPink
+}
+
 # Load and clean data from single CSV
 @st.cache_data
 def load_data():
@@ -45,7 +61,7 @@ if st.button("Pick Best 11"):
     combined = pd.concat([team1_df, team2_df], ignore_index=True)
     combined = combined.sort_values(by="Dream11 Points", ascending=False)
 
-    # Required roles with exact names as per your data
+    # Roles we must have at least one of
     required_roles = ["Wicket Keeper", "Batsman", "Bowler", "All Rounder"]
     selected_players = pd.DataFrame()
 
@@ -58,7 +74,7 @@ if st.button("Pick Best 11"):
         else:
             st.warning(f"No player found for role: {role}")
 
-    # Remove selected players from combined so no duplicates
+    # Remove selected players from combined
     remaining_players = combined[~combined["Player"].isin(selected_players["Player"])]
 
     # Fill remaining spots to make total 11 players
@@ -69,5 +85,20 @@ if st.button("Pick Best 11"):
 
     selected_players = selected_players.reset_index(drop=True)
 
+    # Add serial number 1-11
+    selected_players.insert(0, "No.", range(1, len(selected_players) + 1))
+
+    # Add emoji for role
+    selected_players["Role"] = selected_players["Role"].apply(lambda r: f"{ROLE_EMOJIS.get(r, '')} {r}")
+
+    # Style the dataframe for colors by role
+    def color_roles(row):
+        # Extract role name after emoji for coloring
+        role_name = row["Role"].split(" ", 1)[1] if " " in row["Role"] else row["Role"]
+        color = ROLE_COLORS.get(role_name, "")
+        return [f"background-color: {color}" if col == "Role" else "" for col in row.index]
+
+    styled_df = selected_players.style.apply(color_roles, axis=1)
+
     st.write("## ⭐ Suggested Best 11")
-    st.dataframe(selected_players[["Player", "Team", "Role", "Dream11 Points"]])
+    st.dataframe(styled_df)
