@@ -3,16 +3,14 @@ import pandas as pd
 
 @st.cache_data
 def load_orange_cap():
-    df = pd.read_csv("Orange Cap 2024.csv")
-    # Rename 'Total runs' to 'Runs' for consistency
-    df = df.rename(columns={"Player Name": "Player", "Team Name": "Team", "Total runs": "Runs"})
+    df = pd.read_csv("Dream 11 DB - Orange Cap 2024.csv")
+    df = df.rename(columns={"Player Name": "Player", "Team Name": "Team", "Dream 11 Points": "Dream11 Points", "Role": "Role"})
     return df
 
 @st.cache_data
 def load_purple_cap():
-    df = pd.read_csv("Purple cap 2024.csv")
-    # Rename columns for consistency
-    df = df.rename(columns={"Player Name": "Player", "Team Name": "Team"})
+    df = pd.read_csv("Dream 11 DB - Purple cap 2024.csv")
+    df = df.rename(columns={"Player Name": "Player", "Team Name": "Team", "Dream 11 Points": "Dream11 Points", "Role": "Role"})
     return df
 
 orange_df = load_orange_cap()
@@ -20,61 +18,65 @@ purple_df = load_purple_cap()
 
 st.title("IPL Dream11 Team Generator (2024)")
 
-# Get combined list of teams from both datasets
-teams_orange = orange_df["Team"].unique().tolist()
-teams_purple = purple_df["Team"].unique().tolist()
-teams = sorted(list(set(teams_orange + teams_purple)))
+# Combine and aggregate Dream11 points by Player, Team, Role to avoid duplicates
+combined_df = pd.concat([orange_df, purple_df], ignore_index=True)
 
-# Team selection dropdowns
+# Sum Dream11 Points for duplicates, role and team assumed consistent per player
+aggregated_df = combined_df.groupby(["Player", "Team", "Role"], as_index=False)["Dream11 Points"].sum()
+
+# Get unique sorted list of teams from the combined dataset
+teams = sorted(aggregated_df["Team"].unique())
+
 team1 = st.selectbox("Select Team 1", teams)
 team2 = st.selectbox("Select Team 2", [team for team in teams if team != team1])
 
-# Filter players by team
-orange_team1 = orange_df[orange_df["Team"] == team1]
-orange_team2 = orange_df[orange_df["Team"] == team2]
-purple_team1 = purple_df[purple_df["Team"] == team1]
-purple_team2 = purple_df[purple_df["Team"] == team2]
+# Filter combined data for selected teams
+team1_df = aggregated_df[aggregated_df["Team"] == team1]
+team2_df = aggregated_df[aggregated_df["Team"] == team2]
 
-# Combine batting and bowling data for both teams
-# For batting: use orange cap data (Runs)
-# For bowling: use purple cap data (Wickets)
+# Display squads for both teams
+st.write(f"### {team1} Squad")
+st.dataframe(team1_df.sort_values(by="Dream11 Points", ascending=False))
 
-# Merge batting and bowling stats by Player and Team for both teams combined
-batting = pd.concat([orange_team1, orange_team2], ignore_index=True)[["Player", "Team", "Runs"]]
-bowling = pd.concat([purple_team1, purple_team2], ignore_index=True)[["Player", "Team", "Wickets"]]
-
-# Fill missing wickets/runs with 0 for players missing in one dataset
-batting["Runs"] = batting["Runs"].fillna(0)
-bowling["Wickets"] = bowling["Wickets"].fillna(0)
-
-# Merge on Player and Team, outer join to keep all players
-combined = pd.merge(batting, bowling, on=["Player", "Team"], how="outer").fillna(0)
-
-st.write(f"### {team1} Squad Batting Stats")
-st.dataframe(orange_team1[["Player", "Runs"]].sort_values(by="Runs", ascending=False))
-
-st.write(f"### {team1} Squad Bowling Stats")
-st.dataframe(purple_team1[["Player", "Wickets"]].sort_values(by="Wickets", ascending=False))
-
-st.write(f"### {team2} Squad Batting Stats")
-st.dataframe(orange_team2[["Player", "Runs"]].sort_values(by="Runs", ascending=False))
-
-st.write(f"### {team2} Squad Bowling Stats")
-st.dataframe(purple_team2[["Player", "Wickets"]].sort_values(by="Wickets", ascending=False))
-
+st.write(f"### {team2} Squad")
+st.dataframe(team2_df.sort_values(by="Dream11 Points", ascending=False))
 
 if st.button("Pick Best 11"):
+    # Combine players from both teams
+    combined_teams = pd.concat([team1_df, team2_df], ignore_index=True)
 
-    # Pick top 6 batsmen by Runs
-    batsmen = combined.sort_values(by="Runs", ascending=False)
-    top_batsmen = batsmen.head(6)
+    # Sort all players by Dream11 Points descending
+    combined_teams = combined_teams.sort_values(by="Dream11 Points", ascending=False)
 
-    # Pick top 5 bowlers by Wickets, excluding those already picked as batsmen
-    bowlers = combined[~combined["Player"].isin(top_batsmen["Player"])]
-    top_bowlers = bowlers.sort_values(by="Wickets", ascending=False).head(5)
+    # Role-wise constraints (example):
+    # 1 WK, at least 3 batsmen, at least 3 bowlers, rest can be all-rounders or flexible
+    # You can customize this as per your rules
+    squad = []
+    selected_players = set()
 
-    # Final team combined
-    best_11 = pd.concat([top_batsmen, top_bowlers], ignore_index=True)
+    # Pick 1 Wicket Keeper (highest points)
+    wk = combined_teams[combined_teams["Role"] == "Wicket Keeper"]
+    if not wk.empty:
+        wk_player = wk.iloc[0]
+        squad.append(wk_player)
+        selected_players.add(wk_player["Player"])
 
-    st.write("## Suggested Best 11")
-    st.dataframe(best_11.reset_index(drop=True)[["Player", "Team", "Runs", "Wickets"]])
+    # Pick 3 Batsmen (excluding selected)
+    batsmen = combined_teams[(combined_teams["Role"] == "Batsman") & (~combined_teams["Player"].isin(selected_players))]
+    squad += batsmen.head(3).to_dict('records')
+    selected_players.update([p["Player"] for p in batsmen.head(3).to_dict('records')])
+
+    # Pick 3 Bowlers (excluding selected)
+    bowlers = combined_teams[(combined_teams["Role"] == "Bowler") & (~combined_teams["Player"].isin(selected_players))]
+    squad += bowlers.head(3).to_dict('records')
+    selected_players.update([p["Player"] for p in bowlers.head(3).to_dict('records')])
+
+    # Remaining 4 picks from All Rounders or any Role (excluding selected)
+    remaining = combined_teams[~combined_teams["Player"].isin(selected_players)]
+    squad += remaining.head(4).to_dict('records')
+
+    # Create DataFrame from selected squad
+    best_11_df = pd.DataFrame(squad)
+
+    st.write("## Suggested Best 11 Dream11 Squad")
+    st.dataframe(best_11_df.reset_index(drop=True)[["Player", "Team", "Role", "Dream11 Points"]])
