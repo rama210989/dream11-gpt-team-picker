@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-
 # Emojis for roles
 ROLE_EMOJIS = {
     "Wicket Keeper": "🧤",
