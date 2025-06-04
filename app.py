@@ -4,7 +4,7 @@ import pandas as pd
 # Load and clean data from single CSV
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Dream 11 DB - Relevant Data.csv")
+    df = pd.read_csv("Dream 11 DB  - Relevant Data.csv")
     df = df.rename(columns={
         "Player Name": "Player",
         "Team Name": "Team",
